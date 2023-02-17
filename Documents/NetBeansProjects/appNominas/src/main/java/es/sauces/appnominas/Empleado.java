@@ -1,14 +1,10 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package es.sauces.appnominas;
 
 import java.util.Objects;
 
 /**
  *
- * @author daw1
+ * @author Oscar Pascual Ferrero
  */
 public abstract class Empleado implements Comparable<Empleado>{
     private String dni;

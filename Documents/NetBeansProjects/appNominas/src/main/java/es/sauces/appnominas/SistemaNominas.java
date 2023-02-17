@@ -6,18 +6,19 @@ package es.sauces.appnominas;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  *
  * @author daw1
  */
 public class SistemaNominas {
-    private List<Empleado> empleados;
+    private Set<Empleado> empleados;
 
     public SistemaNominas() {
-        empleados=new LinkedList<>();
+        empleados=new TreeSet<>();
     }
     
     public boolean incluirEmpleado(Empleado empleado){
