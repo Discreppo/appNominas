@@ -5,6 +5,7 @@
 package es.sauces.appnominas;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -20,29 +21,44 @@ public class SistemaNominas {
     }
     
     public boolean incluirEmpleado(Empleado empleado){
-        return true;
+        if(!empleados.contains(empleado)){
+            return empleados.add(empleado);
+        }
+        else{
+            return false;
+        }        
     }
     
-    public Empleado getEmpleado(String dni){
+    public Empleado getEmpleado(String dni){        
+        for(Empleado e:empleados){
+            if(dni.equals(e.getDni())){
+                return e;
+            }
+        }
         return null;
     }
     
     public boolean eliminarEmpleado(Empleado empleado){
-        return true;
+        return empleados.remove(empleado);        
     }
     
     public List<Empleado> listarEmpleados(){
-        List<Empleado> listado=new ArrayList<>();
+        List<Empleado> listado=new ArrayList<>(empleados);        
         return listado;
     }
     
     public List<Empleado> listarEmpleadosPorSueldo(){
-        List<Empleado> listado=new ArrayList<>();
+        List<Empleado> listado=new ArrayList<>(empleados);
+        Collections.sort(listado,new ComparadorSueldo());
         return listado;
     }
     
     public float getTotalSalarios(){
-        return 0;
+        float totalSalario=0;
+        for(Empleado e:empleados){
+            totalSalario+=e.ingresos();
+        }
+        return totalSalario;
     }
     
 }
