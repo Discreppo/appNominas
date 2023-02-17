@@ -27,11 +27,11 @@ public abstract class Empleado implements Comparable<Empleado>{
         this.dni = dni;
     }
 
-    public String getNomobre() {
+    public String getNombre() {
         return nombre;
     }
 
-    public void setNomobre(String nombre) {
+    public void setNombre(String nombre) {
         this.nombre = nombre;
     }
 
@@ -50,7 +50,7 @@ public abstract class Empleado implements Comparable<Empleado>{
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (getClass().getGenericSuperclass() != obj.getClass().getGenericSuperclass()) {
             return false;
         }
         final Empleado other = (Empleado) obj;
