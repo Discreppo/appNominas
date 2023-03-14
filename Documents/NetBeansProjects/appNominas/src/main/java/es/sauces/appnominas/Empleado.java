@@ -1,25 +1,27 @@
 package es.sauces.appnominas;
 
 import java.util.Objects;
+import java.util.logging.Logger;
 
 /**
  *
  * @author Oscar Pascual Ferrero
  */
 public abstract class Empleado implements Comparable<Empleado>{
-    private String dni;
+    private Dni dni;
     private String nombre;
+    private static final Logger LOG = Logger.getLogger(Empleado.class.getName());
 
-    public Empleado(String dni, String nombre) {
+    public Empleado(Dni dni, String nombre) {
         this.dni = dni;
         this.nombre = nombre;
     }
 
-    public String getDni() {
+    public Dni getDni() {
         return dni;
     }
 
-    public void setDni(String dni) {
+    public void setDni(Dni dni) {
         this.dni = dni;
     }
 
@@ -60,7 +62,8 @@ public abstract class Empleado implements Comparable<Empleado>{
     
     @Override
     public int compareTo(Empleado o){
-        return this.dni.compareTo(o.dni);
+        this.dni.equals(o.dni);
+        return this.dni.equals(o.dni);
     }
     
     public abstract float ingresos();

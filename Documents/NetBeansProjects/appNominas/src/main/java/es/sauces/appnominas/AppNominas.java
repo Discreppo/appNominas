@@ -1,14 +1,24 @@
 package es.sauces.appnominas;
 
+import java.io.IOException;
 import java.util.Scanner;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 /**
  *
- * @author daw1
+ * @author Oscar Pascual Ferrero
  */
 public class AppNominas {
 
-    public static void main(String[] args) {
+    private static final Logger LOG = Logger.getLogger("es.sauces.appnominas");
+    
+    
+    public static void main(String[] args) throws IOException {
         Scanner teclado=new Scanner(System.in);
         SistemaNominas sn=null;
         sn=new SistemaNominas();
@@ -17,9 +27,19 @@ public class AppNominas {
         float salario, salarioHoras;
         Empleado e=null;
         
+        LogManager.getLogManager().reset();
+        
+        Handler controlador=new FileHandler("./registro.log",true);
+        controlador.setFormatter(new SimpleFormatter());
+        LOG.setLevel(Level.INFO);
+        LOG.addHandler(controlador);
+        
+        LOG.info("Inicio de aplicacion");
+        sn=new SistemaNominas();
         
         do{
             opcion = getOpcion();
+            LOG.log(Level.INFO,String.format("opcion seleccionada: %d", opcion));
                 switch(opcion){ 
                     case 1 -> {
                         operacion=getOperacion();
