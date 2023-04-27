@@ -22,7 +22,7 @@ public class EmpleadoTableModel extends AbstractTableModel {
 
     public EmpleadoTableModel() {
         this.listado = new ArrayList<>();
-        this.columnas = new String[]{};
+        this.columnas = new String[]{"DNI","NOMBRE","SALARIO","HORAS","INGRESOS","TIPO"};
     }
 
     public void setListado(List<Empleado> listado) {

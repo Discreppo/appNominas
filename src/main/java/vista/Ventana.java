@@ -8,6 +8,7 @@ import controlador.Controlador;
 import java.io.File;
 import java.util.List;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 import modelo.Empleado;
 
@@ -106,13 +107,12 @@ public class Ventana extends javax.swing.JFrame {
             }
         });
 
-        tfIngresos.setFont(new java.awt.Font("Segoe UI", 0, 8)); // NOI18N
+        tfIngresos.setEditable(false);
 
-        tfDni.setFont(new java.awt.Font("Segoe UI", 0, 8)); // NOI18N
+        tfDni.setEditable(false);
 
-        tfNombre.setFont(new java.awt.Font("Segoe UI", 0, 8)); // NOI18N
+        tfNombre.setEditable(false);
 
-        cbTipo.setFont(new java.awt.Font("Segoe UI", 0, 8)); // NOI18N
         cbTipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "FIJO", "EVENTUAL" }));
         cbTipo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -120,6 +120,7 @@ public class Ventana extends javax.swing.JFrame {
             }
         });
 
+        ftfSalario.setEditable(false);
         ftfSalario.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
 
         lSalario1.setText("SALARIO");
@@ -195,6 +196,18 @@ public class Ventana extends javax.swing.JFrame {
 
         etm=new EmpleadoTableModel();
         jTable1.setModel(etm);
+        /*jTable1.getSelectionModel().addListSelectionListener(new ListSelectionListener);
+        public void valueChanged(ListSelectionEvent ev){
+            int fila=jTable1.getSelectedRow();
+            if(fila>=0){
+                mostrarDni(jTable1.getValueAt(fila,0));
+                mostrarNombre(jTable1.getValueAt(fila,1));
+                mostrarDni(jTable1.getValueAt(fila,2));
+                mostrarDni(jTable1.getValueAt(fila,3));
+                mostrarDni(jTable1.getValueAt(fila,4));
+                mostrarDni(jTable1.getValueAt(fila,5));
+            }
+        }*/
         jScrollPane1.setViewportView(jTable1);
 
         bListado.setText("LISTADO DE EMPLEADOS");
@@ -353,15 +366,11 @@ public class Ventana extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Ventana.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Ventana.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Ventana.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Ventana.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        
         //</editor-fold>
 
         /* Create and display the form */
@@ -391,6 +400,7 @@ public class Ventana extends javax.swing.JFrame {
         tfNombre.setText("");
         ftfSalario.setValue(0.0f);        
         cbTipo.setSelectedItem(0); 
+        sHoras.setValue(0);
     }
     
     public static final int ACEPTAR = 1;
@@ -478,14 +488,22 @@ public class Ventana extends javax.swing.JFrame {
     }
     
     public void mostrarHoras(int horas){
-        sHoras.set
+        sHoras.setValue(horas);
     }
     
     public void mostrarIngresos(float ingresos){
-        tfIngresos.set
+        tfIngresos.setText(Float.toString(ingresos));
     }
     
     public void listarEmpleados(List<Empleado> listado){
         
+    }
+        
+    public void mostrarMensaje(String mensaje){
+        JOptionPane.showMessageDialog(this, mensaje);
+    }
+    
+    public boolean solicitarConfirmacion(){
+        return true;
     }
 }
