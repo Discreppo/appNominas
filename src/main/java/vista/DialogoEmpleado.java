@@ -46,11 +46,13 @@ public class DialogoEmpleado extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         sHoras.setModel(new javax.swing.SpinnerNumberModel(0, 0, 200, 1));
+        sHoras.setVisible(false);
 
         cbTipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "FIJO", "EVENTUAL" }));
         cbTipo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbTipoActionPerformed(evt);
+                cambiarTipo(evt);
             }
         });
 
@@ -63,6 +65,7 @@ public class DialogoEmpleado extends javax.swing.JDialog {
         lSalario.setText("SALARIO");
 
         lHoras.setText("HORAS");
+        lHoras.setVisible(false);
 
         bAceptar.setText("ACEPTAR");
         bAceptar.addActionListener(new java.awt.event.ActionListener() {
@@ -131,7 +134,6 @@ public class DialogoEmpleado extends javax.swing.JDialog {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lSalario)
                             .addComponent(ftfSalario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(sHoras, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lHoras))
@@ -160,6 +162,17 @@ public class DialogoEmpleado extends javax.swing.JDialog {
         opcion = CANCELAR;
         this.setVisible(false);
     }//GEN-LAST:event_bCancelarActionPerformed
+
+    private void cambiarTipo(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cambiarTipo
+        if(this.cbTipo.getSelectedItem().equals("FIJO")){
+            this.lHoras.setVisible(false);
+            this.sHoras.setVisible(false);
+        }
+        else{
+            this.lHoras.setVisible(true);
+            this.sHoras.setVisible(true);
+        }
+    }//GEN-LAST:event_cambiarTipo
 
     /**
      * @param args the command line arguments
@@ -227,7 +240,7 @@ public class DialogoEmpleado extends javax.swing.JDialog {
     }
     
     public int getHoras(){
-        return sHoras.getComponentCount();
+        return (Integer)this.sHoras.getValue();
     }  
     
     public int mostrar() {

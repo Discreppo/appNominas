@@ -13,6 +13,7 @@ import java.util.TreeSet;
 public class SistemaNominas {
     private Set<Empleado> empleados;
     private EmpleadoDao empleadoDao;
+    
 
     public SistemaNominas() {
         empleados=new TreeSet<>();
@@ -81,4 +82,9 @@ public class SistemaNominas {
         }
         return contador;
     }
+    
+    public void setDao(EmpleadoDao dao) {
+        this.empleadoDao=dao;
+    }
+    
 }

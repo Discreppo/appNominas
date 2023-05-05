@@ -52,15 +52,15 @@ public class EmpleadoTableModel extends AbstractTableModel {
                 o = c.getNombre();
                 break;
             case 2:
-                if (c.getClass().getName().equals("EmpleadoFijo")) {
+                if (c.getClass().getSimpleName().equals("EmpleadoFijo")) {
                     o = ((EmpleadoFijo) c).getSalario();
                 } else {
                     o = ((EmpleadoEventual) c).getSalarioHoras();
                 }
                 break;
             case 3:
-                if (c.getClass().getName().equals("EmpleadoFijo")) {
-                    o = "0";
+                if (c.getClass().getSimpleName().equals("EmpleadoFijo")) {
+                    o = 0;
                 } else {
                     o = ((EmpleadoEventual) c).getHoras();
                 }
@@ -69,7 +69,7 @@ public class EmpleadoTableModel extends AbstractTableModel {
                 o = c.ingresos();
                 break;
             case 5:
-                o = c.getClass();
+                o = c.getClass().getSimpleName();
                 break;
         }
         return o;
@@ -94,13 +94,13 @@ public class EmpleadoTableModel extends AbstractTableModel {
                 clase = Float.class;
                 break;
             case 3:
-                clase = Integer.class;
+                clase = Float.class;
                 break;
             case 4:
                 clase = Integer.class;
                 break;
             case 5:
-                clase = Integer.class;
+                clase = String.class;
                 break;
             
         }

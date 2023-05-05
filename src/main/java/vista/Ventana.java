@@ -6,10 +6,17 @@ package vista;
 
 import controlador.Controlador;
 import java.io.File;
+import java.text.DecimalFormatSymbols;
 import java.util.List;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileFilter;
+import modelo.DniException;
 import modelo.Empleado;
 
 /**
@@ -66,8 +73,12 @@ public class Ventana extends javax.swing.JFrame {
         mEmpleado = new javax.swing.JMenu();
         miNuevo = new javax.swing.JMenuItem();
         miBuscar = new javax.swing.JMenuItem();
+        mUsuario = new javax.swing.JMenu();
+        miLogin = new javax.swing.JMenuItem();
+        miLogout = new javax.swing.JMenuItem();
 
-        selectorFicheros.setFileFilter(new FileFilter(){
+        selectorFicheros.setCurrentDirectory(new File("."));
+        selectorFicheros.addChoosableFileFilter(new FileFilter(){
             public boolean accept(File f){
                 String n=f.getName();
                 boolean b=false;
@@ -78,9 +89,44 @@ public class Ventana extends javax.swing.JFrame {
             public String getDescription(){
                 return "Archivos (*.csv)";
             }
-
         });
-        selectorFicheros.setCurrentDirectory(new java.io.File("C:\\Users\\daw1.IS31WX11\\Dropbox\\DATOS\\PROGRAMACION\\Actividades\\2T\\UD05A05\\AppBanco\\src\\main\\java\\es\\sauces\\appbanco"));
+        selectorFicheros.addChoosableFileFilter(new FileFilter(){
+            public boolean accept(File f){
+                String n=f.getName();
+                boolean b=false;
+                if(f.isDirectory() || n.endsWith(".json"))
+                b=true;
+                return b;
+            }
+            public String getDescription(){
+                return "Archivos (*.json)";
+            }
+        });
+        selectorFicheros.addChoosableFileFilter(new FileFilter(){
+            public boolean accept(File f){
+                String n=f.getName();
+                boolean b=false;
+                if(f.isDirectory() || n.endsWith(".obj"))
+                b=true;
+                return b;
+            }
+            public String getDescription(){
+                return "Archivos (*.obj)";
+            }
+        });
+        selectorFicheros.addChoosableFileFilter(new FileFilter(){
+            public boolean accept(File f){
+                String n=f.getName();
+                boolean b=false;
+                if(f.isDirectory() || n.endsWith(".xml"))
+                b=true;
+                return b;
+            }
+            public String getDescription(){
+                return "Archivos (*.xml)";
+            }
+        });
+        selectorFicheros.setCurrentDirectory(new java.io.File("C:\\Users\\daw1.IS31WX11\\Dropbox\\DATOS\\PROGRAMACION\\Actividades\\3T\\appNominas"));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -93,14 +139,20 @@ public class Ventana extends javax.swing.JFrame {
         lTipo.setText("TIPO");
 
         lHoras.setText("HORAS");
+        lHoras.setVisible(false);
 
         lIngresos.setText("INGRESOS");
 
-        bModificar.setFont(new java.awt.Font("Segoe UI", 0, 8)); // NOI18N
-        bModificar.setText("MODIFCAR");
+        bModificar.setText("MODIFICAR");
+        bModificar.setEnabled(false);
+        bModificar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bModificarActionPerformed(evt);
+            }
+        });
 
-        bBorrar.setFont(new java.awt.Font("Segoe UI", 0, 8)); // NOI18N
         bBorrar.setText("BORRAR");
+        bBorrar.setEnabled(false);
         bBorrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bBorrarActionPerformed(evt);
@@ -108,24 +160,28 @@ public class Ventana extends javax.swing.JFrame {
         });
 
         tfIngresos.setEditable(false);
+        tfIngresos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tfIngresosActionPerformed(evt);
+            }
+        });
 
         tfDni.setEditable(false);
-
-        tfNombre.setEditable(false);
 
         cbTipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "FIJO", "EVENTUAL" }));
         cbTipo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbTipoActionPerformed(evt);
+                cambiarTipo(evt);
             }
         });
 
-        ftfSalario.setEditable(false);
         ftfSalario.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
 
         lSalario1.setText("SALARIO");
 
         sHoras.setModel(new javax.swing.SpinnerNumberModel(0, 0, 200, 1));
+        sHoras.setVisible(false);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -196,30 +252,50 @@ public class Ventana extends javax.swing.JFrame {
 
         etm=new EmpleadoTableModel();
         jTable1.setModel(etm);
-        /*jTable1.getSelectionModel().addListSelectionListener(new ListSelectionListener);
-        public void valueChanged(ListSelectionEvent ev){
-            int fila=jTable1.getSelectedRow();
-            if(fila>=0){
-                mostrarDni(jTable1.getValueAt(fila,0));
-                mostrarNombre(jTable1.getValueAt(fila,1));
-                mostrarDni(jTable1.getValueAt(fila,2));
-                mostrarDni(jTable1.getValueAt(fila,3));
-                mostrarDni(jTable1.getValueAt(fila,4));
-                mostrarDni(jTable1.getValueAt(fila,5));
+        jTable1.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
+            public void valueChanged(ListSelectionEvent lse){
+                int fila=jTable1.getSelectedRow();
+                if(fila>=0){
+                    mostrarDni((String)jTable1.getValueAt(fila,0));
+                    mostrarNombre((String)jTable1.getValueAt(fila,1));
+                    mostrarTipo((String)jTable1.getValueAt(fila,5));
+                    mostrarSalario((float)jTable1.getValueAt(fila,2));
+                    mostrarHoras((int)jTable1.getValueAt(fila,3));
+                    mostrarIngresos((float)jTable1.getValueAt(fila,4));
+                }
             }
-        }*/
+        });
         jScrollPane1.setViewportView(jTable1);
 
         bListado.setText("LISTADO DE EMPLEADOS");
+        bListado.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bListadoActionPerformed(evt);
+            }
+        });
 
         buttonGroup1.add(rbDni);
+        rbDni.setSelected(true);
         rbDni.setText("DNI");
+        rbDni.setActionCommand("dni");
+        rbDni.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rbDniActionPerformed(evt);
+            }
+        });
 
         buttonGroup1.add(rbNombre);
         rbNombre.setText("NOMBRE");
+        rbNombre.setActionCommand("nombre");
+        rbNombre.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rbNombreActionPerformed(evt);
+            }
+        });
 
         buttonGroup1.add(rbIngresos);
         rbIngresos.setText("INGRESOS");
+        rbIngresos.setActionCommand("ingresos");
 
         lOrden.setText("ORDEN DEL LISTADO");
 
@@ -271,14 +347,15 @@ public class Ventana extends javax.swing.JFrame {
                 miAbrirActionPerformed(evt);
             }
         });
-        miAbrir.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                miAbrirActionPerformed(evt);
-            }
-        });
         mArchivo.add(miAbrir);
 
         miGuardar.setText("Guardar...");
+        miGuardar.setEnabled(false);
+        miGuardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                miGuardarActionPerformed(evt);
+            }
+        });
         mArchivo.add(miGuardar);
 
         jMenuBar1.add(mArchivo);
@@ -286,6 +363,7 @@ public class Ventana extends javax.swing.JFrame {
         mEmpleado.setText("Empleado");
 
         miNuevo.setText("Nuevo...");
+        miNuevo.setEnabled(false);
         miNuevo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 miNuevoActionPerformed(evt);
@@ -294,9 +372,35 @@ public class Ventana extends javax.swing.JFrame {
         mEmpleado.add(miNuevo);
 
         miBuscar.setText("Buscar...");
+        miBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                miBuscarActionPerformed(evt);
+            }
+        });
         mEmpleado.add(miBuscar);
 
         jMenuBar1.add(mEmpleado);
+
+        mUsuario.setText("Usuario");
+
+        miLogin.setText("Iniciar sesion");
+        miLogin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                miLoginActionPerformed(evt);
+            }
+        });
+        mUsuario.add(miLogin);
+
+        miLogout.setText("Cerrar sesion");
+        miLogout.setEnabled(false);
+        miLogout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                miLogoutActionPerformed(evt);
+            }
+        });
+        mUsuario.add(miLogout);
+
+        jMenuBar1.add(mUsuario);
 
         setJMenuBar(jMenuBar1);
 
@@ -326,7 +430,7 @@ public class Ventana extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void bBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bBorrarActionPerformed
-        // TODO add your handling code here:
+        controlador.eliminarEmpleado();
     }//GEN-LAST:event_bBorrarActionPerformed
 
     private void cbTipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbTipoActionPerformed
@@ -335,12 +439,16 @@ public class Ventana extends javax.swing.JFrame {
 
     private void miNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miNuevoActionPerformed
        if (this.dialogo.mostrar() == DialogoEmpleado.ACEPTAR) {
-            tfDni.setText(dialogo.getDni());
-            tfNombre.setText(dialogo.getNombre());
-            cbTipo.setSelectedItem(dialogo.getTipo());
-            ftfSalario.setValue(dialogo.getSalario());
-            sHoras.getComponentCount();
-            controlador.crearEmpleado();
+            mostrarDni(dialogo.getDni());
+            mostrarNombre(dialogo.getNombre());
+            mostrarTipo(dialogo.getTipo());
+            mostrarSalario(dialogo.getSalario());
+            mostrarHoras(dialogo.getHoras());
+           try {
+               controlador.crearEmpleado();
+           } catch (DniException ex) {
+               Logger.getLogger(Ventana.class.getName()).log(Level.SEVERE, null, ex);
+           }
         }
     }//GEN-LAST:event_miNuevoActionPerformed
 
@@ -349,6 +457,61 @@ public class Ventana extends javax.swing.JFrame {
             controlador.cargarEmpleados();
         }
     }//GEN-LAST:event_miAbrirActionPerformed
+
+    private void cambiarTipo(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cambiarTipo
+        if(this.cbTipo.getSelectedItem().equals("FIJO")){
+            this.lHoras.setVisible(false);
+            this.sHoras.setVisible(false);
+        }
+        else{
+            this.lHoras.setVisible(true);
+            this.sHoras.setVisible(true);
+        }
+    }//GEN-LAST:event_cambiarTipo
+
+    private void miBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miBuscarActionPerformed
+        String dni=JOptionPane.showInputDialog("DNI");
+        mostrarDni(dni);
+        controlador.buscarEmpleado();
+    }//GEN-LAST:event_miBuscarActionPerformed
+
+    private void rbNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbNombreActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_rbNombreActionPerformed
+
+    private void miGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miGuardarActionPerformed
+        if (selectorFicheros.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+            controlador.guardarEmpleados();
+        }
+    }//GEN-LAST:event_miGuardarActionPerformed
+
+    private void rbDniActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbDniActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_rbDniActionPerformed
+
+    private void bListadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bListadoActionPerformed
+        controlador.listarEmpleados();
+    }//GEN-LAST:event_bListadoActionPerformed
+
+    private void bModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bModificarActionPerformed
+        if(!tfNombre.getText().isBlank() && !tfDni.getText().isBlank()) {
+            controlador.modificarEmpleado();
+        }
+    }//GEN-LAST:event_bModificarActionPerformed
+
+    private void tfIngresosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfIngresosActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tfIngresosActionPerformed
+
+    private void miLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miLogoutActionPerformed
+        controlador.hacerLogout();
+    }//GEN-LAST:event_miLogoutActionPerformed
+
+    private void miLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miLoginActionPerformed
+        if(credenciales.mostrar()==Credenciales.ACEPTAR){
+            controlador.hacerLogin();
+        }
+    }//GEN-LAST:event_miLoginActionPerformed
 
     /**
      * @param args the command line arguments
@@ -407,6 +570,7 @@ public class Ventana extends javax.swing.JFrame {
     public static final int CANCELAR = 0;
     private int opcion;
     
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bBorrar;
     private javax.swing.JButton bListado;
@@ -429,9 +593,12 @@ public class Ventana extends javax.swing.JFrame {
     private javax.swing.JLabel lTipo;
     private javax.swing.JMenu mArchivo;
     private javax.swing.JMenu mEmpleado;
+    private javax.swing.JMenu mUsuario;
     private javax.swing.JMenuItem miAbrir;
     private javax.swing.JMenuItem miBuscar;
     private javax.swing.JMenuItem miGuardar;
+    private javax.swing.JMenuItem miLogin;
+    private javax.swing.JMenuItem miLogout;
     private javax.swing.JMenuItem miNuevo;
     private javax.swing.JRadioButton rbDni;
     private javax.swing.JRadioButton rbIngresos;
@@ -456,11 +623,14 @@ public class Ventana extends javax.swing.JFrame {
     }
     
     public float getSalario(){
-        return (float) ftfSalario.getValue();
+        DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
+        simbolos.setDecimalSeparator('.');
+        simbolos.setGroupingSeparator(',');
+        return ((Number) this.ftfSalario.getValue()).floatValue();
     }
     
     public int getHoras(){
-        return sHoras.getComponentCount();
+        return (int)sHoras.getValue();
     }
     
     public String getArchivo(){
@@ -468,7 +638,7 @@ public class Ventana extends javax.swing.JFrame {
     }
     
     public String getOrden(){
-        return null;
+        return this.buttonGroup1.getSelection().getActionCommand();
     }
     
     public void mostrarTipo(String tipo){
@@ -496,7 +666,7 @@ public class Ventana extends javax.swing.JFrame {
     }
     
     public void listarEmpleados(List<Empleado> listado){
-        
+        etm.setListado(listado);
     }
         
     public void mostrarMensaje(String mensaje){
@@ -506,4 +676,43 @@ public class Ventana extends javax.swing.JFrame {
     public boolean solicitarConfirmacion(){
         return true;
     }
+    
+    
+    
+    Credenciales credenciales=new Credenciales(this,true); 
+            
+    public void pedirCredenciales() {
+        if(credenciales.mostrar()==Credenciales.ACEPTAR){
+            controlador.hacerLogin();
+        }
+    }
+
+    public String getUsuario() {
+        return credenciales.getUsuario();
+    }
+
+    public char[] getPassword() {
+        return credenciales.getPassword();
+    }
+
+    public void cambiarUsuario(String registrado) {
+        if(registrado.equals("registrado")){
+            this.miGuardar.setEnabled(true);
+            this.miNuevo.setEnabled(true);
+            this.bBorrar.setEnabled(true);
+            this.bModificar.setEnabled(true);
+            this.miLogin.setEnabled(false);
+            this.miLogout.setEnabled(true);
+        }
+        else{
+            this.miGuardar.setEnabled(false);
+            this.miNuevo.setEnabled(false);
+            this.bBorrar.setEnabled(false);
+            this.bModificar.setEnabled(false);
+            this.miLogin.setEnabled(true);
+            this.miLogout.setEnabled(false);
+        
+        }
+    }
+    
 }

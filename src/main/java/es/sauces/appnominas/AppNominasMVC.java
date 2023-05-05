@@ -1,17 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package es.sauces.appnominas;
 
 import controlador.Controlador;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Locale;
-import java.util.Properties;
-import java.util.ResourceBundle;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import modelo.SistemaNominas;
@@ -19,12 +9,13 @@ import vista.Ventana;
 
 /**
  *
- * @author daw1
+ * @author Oscar Pascual Ferrero
  */
 public class AppNominasMVC {
-/*
-    private static final Logger LOG = Logger.getLogger(java.util.ResourceBundle.getBundle("mensajes").getString("ES.SAUCES.APPBANCO"));
-*/
+
+
+    private static final Logger LOG = Logger.getLogger("ES.SAUCES.APPNOMINAS");
+
     public static void main(String[] args) throws IOException {
         SistemaNominas modelo = new SistemaNominas();
         Ventana vista = new Ventana();
@@ -43,12 +34,12 @@ public class AppNominasMVC {
             System.out.println("Error de E/S");
         }
 
-        java.util.ResourceBundle rb = ResourceBundle.getBundle("mensajes");
+        java.util.ResourceBundle rb = ResourceBundle.getBundle("mensajes");*/
 
-        LogManager.getLogManager().readConfiguration(ClassLoader.getSystemClassLoader().getResourceAsStream(java.util.ResourceBundle.getBundle("mensajes").getString("MYLOGGING.PROPERTIES")));
+        LogManager.getLogManager().readConfiguration(ClassLoader.getSystemClassLoader().getResourceAsStream("mylogging.properties"));
 
-        sistemaNominas = new SistemaNominas();
+        /*sistemaNominas = new SistemaNominas();*/
 
-        LOG.info(java.util.ResourceBundle.getBundle("mensajes").getString("INICIO DE SESION"));*/
+        LOG.info("INICIO DE SESION");
     }
 }
